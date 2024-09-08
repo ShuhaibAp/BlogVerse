@@ -1,0 +1,89 @@
+{% extends 'HomePage.html' %}
+{% load static %}
+{% block home %}
+
+<!-- Logout Button -->
+<div class="top-0 start-0 mt-3 ms-3">
+    <a href="{% url 'lout' %}" class="btn btn-dark btn-sm py-2" title="Logout">
+        <i class="fas fa-sign-out-alt"></i>
+    </a>
+</div>
+
+<section class="section bg-light text-dark">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center position-relative">
+                <!-- Profile Image -->
+                <div class="profile-img-container mb-4">
+                    {% if profile.image %}
+                        <img src="{{ profile.image.url }}" alt="{{ profile.user.username }}" class="rounded-circle" style="width: 130px; height: 130px; object-fit: cover; border: 2px solid #007bff;">
+                    {% else %}
+                        <img src="{% static 'images/default_profile.png' %}" alt="{{ profile.user.username }}" class="rounded-circle" style="width: 120px; height: 120px; object-fit: cover; border: 2px solid #007bff;">
+                    {% endif %}
+                </div>
+                
+                <!-- Username -->
+                <h2 class="display-8 mb-0 text-dark">{{ profile.username }}</h2>
+                
+                <!-- Bio Section -->
+                <div class="bio-section my-2 p-2 bg-light text-dark text-start">
+                    <p class="lead">{{ profile.bio }}</p>
+                </div>
+                
+                <!-- Icons for Update and Delete -->
+                <div class="position-absolute top-0 end-0 mt-3 me-3">
+                    <a href="{% url 'pupd' user.username %}" class="btn btn-secondary btn-sm me-2 py-2" title="Update Details">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                    <a href="{% url 'pdel' user.username %}" class="btn btn-danger btn-sm py-2" title="Delete Account" onclick="return confirm('Are you sure you want to delete your account?');">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section for User's Blogs -->
+<section class="section bg-light text-dark">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <h3 class="text-center mb-4 text-primary">Blogs by You</h3>
+                
+                {% if user_blogs %}
+                    {% for blog in user_blogs %}
+                        <div class="card mb-3">
+                            <div class="row g-0">
+                                <!-- Blog Image -->
+                                <div class="col-md-4">
+                                    <img src="{{ blog.image.url }}" class="img-fluid rounded-start" alt="{{ blog.title }}" style="object-fit: cover; height: 100%; width: 100%;">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <!-- Blog Title and Date -->
+                                        <a href=""><h4 class="card-title text-dark">{{ blog.title }}</h4></a>
+                                        <p class="card-text text-muted"><small>{{ blog.date|date:"F j, Y" }}</small></p>
+                                        <!-- Blog Description -->
+                                        <p class="card-text">{{ blog.desc|truncatewords:20 }}</p>
+                                        <!-- Read More Button -->
+                                        <a href="#" class="btn btn-outline-dark py-2">Read More</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-center text-muted">No blogs posted yet.</p>
+                    <div class="text-center">
+                        <a href="{% url 'badd' %}" class="btn btn-primary btn-lg mt-1 py-2">New Blog</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock home %}

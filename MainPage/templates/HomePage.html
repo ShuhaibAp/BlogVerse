@@ -1,0 +1,466 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="author" content="Untree.co">
+	<link rel="shortcut icon" href="favicon.png">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+	<meta name="description" content="" />
+	<meta name="keywords" content="bootstrap, bootstrap5" />
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+
+	<link rel="stylesheet" href="{% static 'fonts/icomoon/style.css' %}">
+	<link rel="stylesheet" href="{% static 'fonts/flaticon/font/flaticon.css' %}">
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+
+	<link rel="stylesheet" href="{% static 'css/tiny-slider.css' %}">
+	<link rel="stylesheet" href="{% static 'css/aos.css' %}">
+	<link rel="stylesheet" href="{% static 'css/glightbox.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+	<link rel="stylesheet" href="{% static 'css/flatpickr.min.css' %}">
+
+
+<title>BlogVerse</title>
+<link rel="icon" href="{% static 'images/iconbv.png' %}">
+
+</head>
+<body>
+
+	<div class="site-mobile-menu site-navbar-target">
+		<div class="site-mobile-menu-header">
+			<div class="site-mobile-menu-close">
+				<span class="icofont-close js-menu-toggle"></span>
+			</div>
+		</div>
+		<div class="site-mobile-menu-body"></div>
+	</div>
+
+	<nav class="site-nav">
+		<div class="container">
+			<div class="menu-bg-wrap">
+				<div class="site-navigation">
+					<div class="row g-0 align-items-center">
+						<div class="col-2">
+							<a href="index.html" class="logo m-0 float-start"><img src="{% static 'images\iconbv.png' %}" alt="" height="20px"> Blog Verse<span class="text-primary">.</span></a>
+						</div>
+						<div class="col-8 text-center">
+							<form action="#" class="search-form d-inline-block d-lg-none">
+								<input type="text" class="form-control" placeholder="Search...">
+								<span class="bi-search"></span>
+							</form>
+
+							<ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu mx-auto">
+								<li class="active"><a href="{% url 'home' %}">Home</a></li>
+								<li><a href="">Technology</a></li>
+								<li><a href="category.html">Business</a></li>
+								<li class="has-children">
+									<a href="#" class="text-decoration-none" style="pointer-events: none;">Categories</a>
+									<ul class="dropdown">
+										<li><a href="{% url 'blist' cat="Technology" %}">Technology</a></li>
+										<li><a href="{% url 'blist' cat="Buisiness" %}">Buisiness</a></li>
+										<li><a href="{% url 'blist' cat="Food" %}">Food</a></li>
+										<li><a href="{% url 'blist' cat="Anime" %}">Anime</a></li>
+										<li><a href="{% url 'blist' cat="Cars" %}">Cars</a></li>
+										<li><a href="{% url 'blist' cat="Story" %}">Story</a></li>
+										<li><a href="{% url 'blist' cat="Sports" %}">Sports</a></li>
+									</ul>
+								</li>
+								<form action="#" class="search-form d-none d-lg-inline-block mx-5">
+								<input type="text" class="form-control" placeholder="Search...">
+								<span class="bi-search"></span>
+							</form>
+							</ul>
+						</div>
+						<div class="col-2 text-end">
+							<a href="#" class="burger ms-auto float-end site-menu-toggle js-menu-toggle d-inline-block d-lg-none light">
+								<span></span>
+							</a>
+								<div class="search-form d-none d-lg-inline-block">
+									{% if user.is_authenticated %}
+										{% if user.profile %}
+										<a href="{% url 'pview' user %}" class="d-flex align-items-center mt-2">
+											<img src="{{ user.profile.image.url }}" alt="Profile Image" class="rounded-circle" style="width: 40px; height: 40px;">
+										</a>
+										{% else %}
+										<a href="{% url 'padd' %}" class="d-flex align-items-center mt-2">
+											<img src="{% static 'images/default_profile.png' %}" alt="Profile Image" class="rounded-circle" style="width: 40px; height: 40px;">
+										</a>
+										{% endif %}
+									{% endif %}
+								</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</nav>
+{% block home %}
+	<!-- Start Intro Section -->
+	<section class="section bg-white intro-section">
+		<div class="container">
+			<div class="row justify-content-center text-center">
+				<div class="col-md-8">
+					<h2 class="display-4 text-primary">Welcome to Blogverse</h2>
+					<p class="lead text-dark">Blogverse is your one-stop platform to share your thoughts, experiences, and stories with the world. Whether you’re writing about technology, lifestyle, or anything in between, Blogverse provides the perfect place for your voice to be heard.</p>
+					<p class="lead 	text-primary">Join our community of writers and start sharing your blogs today!</p>
+					<div class="text-center">
+					<a href="{% url 'badd' %}" class="btn btn-primary btn-lg mt-1 py-2">New Blog</a>
+				    </div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Intro Section -->
+	<!-- Start retroy layout blog posts -->
+<section class="section bg-light">
+    <div class="container">
+		<div class="col-sm-6">
+                <h2 class="posts-entry-title">latest blogs</h2>
+            </div>
+        <div class="row align-items-stretch retro-layout">
+            {% for blog in latest_blogs %}
+                <div class="col-md-4 mt-3">
+                    <a href="{% url 'bdet' blog.id %}" class="h-entry mb-30 {% if forloop.first %}v-height{% else %}v-height{% endif %} gradient">
+                        <div class="featured-img" style="background-image: url('{{ blog.image.url }}');"></div>
+                        <div class="text">
+                            <span class="date">{{ blog.date|date:"M. dS, Y" }}</span>
+                            <h2>{{ blog.title }}</h2>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+	<!-- End retroy layout blog posts -->
+
+	<!-- Start posts-entry -->
+<section class="section posts-entry">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-sm-6">
+                <h2 class="posts-entry-title">Technology</h2>
+            </div>
+            <!-- Ensure View All is properly aligned -->
+            <div class="col-sm-6 text-sm-end">
+                <a href="#" class="read-more">View All</a>
+            </div>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-9">
+                <div class="row g-3">
+                    {% for blog in tech_blogs %}
+                            <div class="col-md-6">
+                                <div class="blog-entry">
+                                    <a href="{% url 'bdet' blog.id %}" class="img-link mt-3">
+                                        <img src="{{ blog.image.url }}" alt="{{ blog.title }}" height="376px" width="476px">
+                                    </a>
+									<a href="" class="d-flex align-items-center mt-2">
+										<img src="{{ blog.profile.image.url }}" alt="{{ blog.profile.username }}" class="rounded-circle" style="width: 40px; height: 40px;">
+										<span class="ms-2">{{ blog.profile.username }}</span>
+										<span class="date">&nbsp;&nbsp;-&nbsp;{{ blog.date|date:"M. d, Y" }}</span>
+									</a>
+									<h2 class="mt-3"><a href="{% url 'bdet' blog.id %}">{{ blog.title }}</a></h2>
+                                    {% if blog.desc|length > 300 %}
+                                        <p>{{ blog.desc|slice:":300" }}...</p>
+                                    {% else %}
+                                        <p>{{ blog.desc }}</p>
+                                    {% endif %}
+                                    <p><a href="{% url 'bdet' blog.id %}" class="btn btn-sm btn-outline-primary">Read More</a></p>
+                                </div>
+                            </div>
+                    {% endfor %}
+                </div>
+            </div>
+			<!--side section-->
+    <div class="col-md-3 ">
+                <ul class="list-unstyled blog-entry-sm">
+                        {% for blog in side_tech_blogs %}
+                            <li>
+                                    <h3 class="mt-3" ><a href="{% url 'bdet' blog.id %}">{{ blog.title }}</a></h3>
+                                    <p>{{ blog.desc|slice:":100" }}...</p>
+                                    <div class="d-flex align-items-center mt-1">
+									<a href="#" class="d-flex align-items-center mt-0 mb-4">
+										<img src="{{ blog.profile.image.url }}" alt="{{ blog.profile.username }}" class="rounded-circle" style="width: 37px; height:37px;">
+										<span class="ms-2">{{ blog.profile.username }}</span>
+										<span class="date">&nbsp;&nbsp;-&nbsp;{{ blog.date|date:"M. d, Y" }}</span>
+									</a>
+                                    </div>
+                            </li>
+                        {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+	<!-- End posts-entry -->
+
+	<!-- Start posts-entry -->
+<section class="section posts-entry posts-entry-sm bg-light">
+    <div class="container">
+        <div class="row">
+            {% for blog in end_tech_blogs %}
+            <div class="col-md-6 col-lg-3">
+                <div class="blog-entry">
+                    <a href="{% url 'bdet' blog.id %}" class="img-link">
+                        <img src="{{ blog.image.url }}" alt="Image" width="306px" height="204px">
+                    </a>
+					<a href="#" class="d-flex align-items-center mt-0">
+						<img src="{{ blog.profile.image.url }}" alt="{{ blog.profile.username }}" class="rounded-circle" style="width: 37px; height:37px;">
+						<span class="ms-2">{{ blog.profile.username }}</span>
+						<span class="date">&nbsp;&nbsp;-&nbsp;{{ blog.date|date:"M. d, Y" }}</span>
+					</a>
+                    <h2 class="mt-3"><a href="{% url 'bdet' blog.id %}">{{ blog.title }}</a></h2>
+                    <p>{{ blog.desc|slice:":100" }}...</p>
+                    <p><a href="{% url 'bdet' blog.id %}" class="btn btn-sm btn-outline-primary">Continue Reading</a></p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+	<!-- End posts-entry -->
+
+	<!-- Start posts-entry -->
+	<section class="section posts-entry">
+		<div class="container">
+			<div class="row mb-4">
+				<div class="col-sm-6">
+					<h2 class="posts-entry-title">Anime</h2>
+				</div>
+				<div class="col-sm-6 text-sm-end"><a href="category.html" class="read-more">View All</a></div>
+			</div>
+			<div class="row g-3">
+				<div class="col-md-9 order-md-2">
+					<div class="row g-3">
+					{% for blog in main_anime_blogs %}
+						<div class="col-md-6">
+							<div class="blog-entry">
+								<a href="{% url 'bdet' blog.id %}" class="img-link mt-3">
+									<img src="{{blog.image.url}}" alt="Image" height="376px" width="476px">
+								</a>
+								<a href="#" class="d-flex align-items-center mt-0">
+									<img src="{{ blog.profile.image.url }}" alt="{{ blog.profile.username }}" class="rounded-circle" style="width: 40px; height: 40px;">
+									<span class="ms-2">{{ blog.profile.username }}</span>
+									<span class="date">&nbsp;&nbsp;-&nbsp;{{ blog.date|date:"M. d, Y" }}</span>
+								</a>
+								<h2 class="mt-3"><a href="{% url 'bdet' blog.id %}">{{blog.title}}</a></h2>
+								<p>{{ blog.desc|slice:":300" }}...</p>
+								<p><a href="{% url 'bdet' blog.id %}" class="btn btn-sm btn-outline-primary">Read More</a></p>
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="col-md-3">
+					<ul class="list-unstyled blog-entry-sm">
+						{% for blog in side_anime_blogs %}
+						<li>
+							<h3 class="mt-3"><a href="{% url 'bdet' blog.id %}">{{blog.title}}</a></h3>
+							<p>{{ blog.desc|slice:":100" }}...</p>
+							<div class="d-flex align-items-center mt-1">
+								<a href="#" class="d-flex align-items-center mt-0 mb-4">
+									<img src="{{ blog.profile.image.url }}" alt="{{ blog.profile.username }}" class="rounded-circle" style="width: 40px; height: 40px;">
+									<span class="ms-2">{{ blog.profile.username }}</span>
+									<span class="date">&nbsp;&nbsp;-&nbsp;{{ blog.date|date:"M. d, Y" }}</span>
+								</a>
+                            </div>
+						</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</section>
+		<!-- Start posts-entry -->
+<section class="section posts-entry posts-entry-sm bg-light">
+    <div class="container">
+        <div class="row">
+            {% for blog in end_anime_blogs %}
+            <div class="col-md-6 col-lg-3">
+                <div class="blog-entry">
+                    <a href="{% url 'bdet' blog.id %}" class="img-link">
+                        <img src="{{ blog.image.url }}" alt="Image" width="306px" height="204px">
+                    </a>
+                    <a href="#" class="d-flex align-items-center mt-0">
+						<img src="{{ blog.profile.image.url }}" alt="{{ blog.profile.username }}" class="rounded-circle" style="width: 37px; height:37px;">
+						<span class="ms-2">{{ blog.profile.username }}</span>
+						<span class="date">&nbsp;&nbsp;-&nbsp;{{ blog.date|date:"M. d, Y" }}</span>
+					</a>
+                    <h2 class="mt-3"><a href="single.html">{{ blog.title |slice:":70" }}...</a></h2>
+                    <p>{{ blog.desc|slice:":100" }}...</p>
+                    <p><a href="{% url 'bdet' blog.id %}" class="btn btn-sm btn-outline-primary">Continue Reading</a></p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+	<section class="section">
+		<div class="container">
+
+			<div class="row mb-4">
+				<div class="col-sm-6">
+					<h2 class="posts-entry-title">Story</h2>
+				</div>
+				<div class="col-sm-6 text-sm-end"><a href="category.html" class="read-more">View All</a></div>
+			</div>
+
+			<div class="row">
+				{% for blog in story_blogs %}
+				<div class="col-lg-4 mb-4">
+					<div class="post-entry-alt">
+						<a href="{% url 'bdet' blog.id %}" class="img-link"><img src="{{blog.image.url}}" alt="Image" width="356px" height="254px" ></a>
+						<div class="excerpt">
+						<a href="#" class="d-flex align-items-center"></a>
+								<img src="{{ blog.profile.image.url }}" alt="{{ blog.profile.username }}" class="rounded-circle" style="width: 40px; height: 40px;">
+								<span class="ms-2">{{ blog.profile.username }}</span>
+								<span class="date">&nbsp;&nbsp;-&nbsp;{{ blog.date|date:"M. d, Y" }}</span>
+							</a>
+							<h2 class="mt-3"><a href="{% url 'bdet' blog.id %}">{{blog.title | slice:":70"}}...</a></h2>
+							<p >{{blog.desc|slice:":170"}}...</p>
+							<p><a href="{% url 'bdet' blog.id %}" class="btn btn-sm btn-outline-primary">Continue Reading</a></p>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</section>
+
+	<div class="section bg-light">
+		<div class="container">
+
+			<div class="row mb-4">
+				<div class="col-sm-6">
+					<h2 class="posts-entry-title">Sports</h2>
+				</div>
+				<div class="col-sm-6 text-sm-end"><a href="category.html" class="read-more">View All</a></div>
+			</div>
+
+			<div class="row align-items-stretch retro-layout-alt">
+				<div class="col-md-5 order-md-2">
+					{% for blog in vert_sports_blogs %}
+					<a href="{% url 'bdet' blog.id %}" class="hentry img-1 h-100 gradient">
+						<div class="featured-img" style="background-image: url('{{ blog.image.url }}');"></div>
+						<div class="text">
+							<span>{{blog.date}}</span>
+							<h2>{{blog.title}}</h2>
+						</div>
+						{% endfor %}
+					</a>
+				</div>
+
+				<div class="col-md-7">
+					{% for blog in horiz_sports_blogs %}
+					<a href="{% url 'bdet' blog.id %}" class="hentry img-2 v-height mb30 gradient">
+						<div class="featured-img" style="background-image: url('{{blog.image}}');"></div>
+						<div class="text text-sm">
+							<span>{{blog.date}}</span>
+							<h2>{{blog.title}}</h2>
+						</div>
+					</a>
+					{% endfor %}
+
+					<div class="two-col d-block d-md-flex justify-content-between">
+						{% for blog in two_sports_blogs %}
+						<a href="{% url 'bdet' blog.id %}" class="hentry v-height img-2 gradient">
+							<div class="featured-img" style="background-image: url('{{blog.image.url}}');"></div>
+							<div class="text text-sm">
+								<span>{{blog.date}}</span>
+								<h2>{{blog.title}}</h2>
+							</div>
+						</a>
+						{% endfor %}
+					</div>  
+				</div>
+			</div>
+		</div>
+		</div>
+{% endblock home %}
+	<!-- Footer -->
+<footer class="site-footer text-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="widget">
+                    <h3 class="mb-4 text-light">About</h3>
+                    <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+                </div> <!-- /.widget -->
+            </div> <!-- /.col-lg-4 -->
+            <div class="col-lg-3">
+                <div class="widget">
+                    <h3 class="mb-4 text-light">Links</h3>
+                    <ul class="list-unstyled">
+						<li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div> <!-- /.widget -->
+            </div> <!-- /.col-lg-4 -->
+            <div class="col-lg-3">
+                <div class="widget">
+                    <h3 class="mb-4 text-light">Categories</h3>
+                    <ul class="dropdown list-unstyled">
+						<li><a href="{% url 'blist' cat="Technology" %}">Technology</a></li>
+						<li><a href="{% url 'blist' cat="Buisiness" %}">Buisiness</a></li>
+						<li><a href="{% url 'blist' cat="Food" %}">Food</a></li>
+						<li><a href="{% url 'blist' cat="Anime" %}">Anime</a></li>
+						<li><a href="{% url 'blist' cat="Cars" %}">Cars</a></li>
+						<li><a href="{% url 'blist' cat="Story" %}">Story</a></li>
+						<li><a href="{% url 'blist' cat="Sports" %}">Sports</a></li>
+					</ul>
+                </div> <!-- /.widget -->
+            </div> <!-- /.col-lg-4 -->
+            <div class="col-lg-3">
+                <div class="widget">
+                    <h3 class="mb-4 text-light">Social</h3>
+                    <ul class="list-unstyled social">
+							<li><a href="#"><span class="icon-instagram"></span></a></li>
+							<li><a href="#"><span class="icon-twitter"></span></a></li>
+							<li><a href="#"><span class="icon-facebook"></span></a></li>
+							<li><a href="#"><span class="icon-linkedin"></span></a></li>
+						</ul>
+                </div> <!-- /.widget -->
+            </div> <!-- /.col-lg-4 -->
+        </div> <!-- /.row -->
+
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <p class="mb-0">&copy; <script>document.write(new Date().getFullYear());</script> All Rights Reserved. Designed with love by <a href="https://untree.co" class="text-light">Untree.co</a></p>
+            </div>
+        </div>
+    </div> <!-- /.container -->
+</footer> <!-- /.site-footer -->
+
+<!-- Preloader -->
+<div id="overlayer"></div>
+<div class="loader">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/tiny-slider.js' %}"></script>
+<script src="{% static 'js/flatpickr.min.js' %}"></script>
+<script src="{% static 'js/aos.js' %}"></script>
+<script src="{% static 'js/glightbox.min.js' %}"></script>
+<script src="{% static 'js/navbar.js' %}"></script>
+<script src="{% static 'js/counter.js' %}"></script>
+<script src="{% static 'js/custom.js' %}"></script>
+
+</body>
+</html>
