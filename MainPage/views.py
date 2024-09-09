@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render,redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy,reverse
 from django.views import View
 from django.views.generic import TemplateView,DetailView,ListView,CreateView,UpdateView,View
 from .forms import *
@@ -46,7 +46,7 @@ class NewProfile(View):
 
 class NewBlog(View):
     def get(self, request):
-        form = BlogForm()
+        form=BlogForm()
         return render(request, "Blog_add.html", {"form": form})
     
     def post(self, request):
@@ -58,7 +58,7 @@ class NewBlog(View):
             blog = form.save(commit=False)
             profiles = Profile.objects.filter(user=request.user)
             if profiles.exists():
-                blog.profile = profiles.first()
+                blog.profile=profiles.first()
             else:
                 messages.error(request, "Profile does not exist. Please create a profile first.")
                 return render(request, "AddBlog.html", {"form": form})
@@ -69,15 +69,62 @@ class NewBlog(View):
 
 
 class BlogList(ListView):
-    template_name = "blog_list.html"
-    context_object_name = 'blogs'
+    template_name="blog_list.html"
+    context_object_name='blogs'
     def get_queryset(self):
-        category = self.kwargs.get('cat')
+        category=self.kwargs.get('cat')
         return Blog.objects.filter(category=category)
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['selected_category'] = self.kwargs.get('cat')
+        context=super().get_context_data(**kwargs)
+        context['selected_category']=self.kwargs.get('cat')
         return context
+
+class BlogDetail(DetailView):
+    model=Blog
+    template_name="blog_details.html"
+    context_object_name="blog_det"
+    pk_url_kwarg='id'
+
+    def get_object(self):
+        return get_object_or_404(Blog, id=self.kwargs['id'])
+
+class BlogUpdate(UpdateView):
+    template_name="blog_update.html"
+    form_class=BlogForm
+    pk_url_kwarg='id'
+    queryset=Blog.objects.all()
+    def get_success_url(self):
+        return reverse('bdet', kwargs={'id': self.object.id})
+
+def BlogLikes(request, blog_id):
+    blog=get_object_or_404(Blog, id=blog_id)
+    if request.user in blog.likes.all():
+        blog.likes.remove(request.user)
+    else:
+        blog.likes.add(request.user)
+    return redirect('bdet', id=blog_id)
+
+class LikedList(ListView):
+    template_name="Liked_list.html"
+    context_object_name="likelist"
+    def get_queryset(self):
+        user_id = self.kwargs.get('id')
+        return Blog.objects.filter(likes=user_id)
+
+def BlogBookmark(request, blog_id):
+    blog=get_object_or_404(Blog, id=blog_id)
+    if request.user in blog.bookmarks.all():
+        blog.bookmarks.remove(request.user)
+    else:
+        blog.bookmarks.add(request.user)
+    return redirect('bdet',id=blog_id)
+
+class BookmarkList(ListView):
+    template_name="bookmark_list.html"
+    context_object_name="booklist"
+    def get_queryset(self):
+        user_id = self.kwargs.get('id')
+        return Blog.objects.filter(bookmarks=user_id)
 
 class ProfileView(DetailView):
     template_name="profile_view.html"
@@ -111,11 +158,3 @@ def DeleteProfile(request, user):
     profile.delete()
     return redirect('padd')
 
-class BlogDetail(DetailView):
-    model = Blog
-    template_name = "blog_details.html"
-    context_object_name = "blog_det"
-    pk_url_kwarg = 'id'
-
-    def get_object(self):
-        return get_object_or_404(Blog, id=self.kwargs['id'])

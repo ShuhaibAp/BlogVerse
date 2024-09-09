@@ -60,8 +60,6 @@
 
 							<ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu mx-auto">
 								<li class="active"><a href="{% url 'home' %}">Home</a></li>
-								<li><a href="">Technology</a></li>
-								<li><a href="category.html">Business</a></li>
 								<li class="has-children">
 									<a href="#" class="text-decoration-none" style="pointer-events: none;">Categories</a>
 									<ul class="dropdown">
@@ -74,6 +72,8 @@
 										<li><a href="{% url 'blist' cat="Sports" %}">Sports</a></li>
 									</ul>
 								</li>
+								<li><a href="{% url 'booklist' user.id %}">Bookmarks</a></li>
+								<li><a href="{% url 'likelist' user.id %}">Liked</a></li>
 								<form action="#" class="search-form d-none d-lg-inline-block mx-5">
 								<input type="text" class="form-control" placeholder="Search...">
 								<span class="bi-search"></span>

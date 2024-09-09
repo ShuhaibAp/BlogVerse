@@ -3,11 +3,13 @@
 {% block home %}
 
 <!-- Logout Button -->
+{% if user == profile.user %}
 <div class="top-0 start-0 mt-3 ms-3">
     <a href="{% url 'lout' %}" class="btn btn-dark btn-sm py-2" title="Logout">
         <i class="fas fa-sign-out-alt"></i>
     </a>
 </div>
+{% endif %}
 
 <section class="section bg-light text-dark">
     <div class="container">
@@ -29,7 +31,7 @@
                 <div class="bio-section my-2 p-2 bg-light text-dark text-start">
                     <p class="lead">{{ profile.bio }}</p>
                 </div>
-                
+                {% if user == profile.user %}
                 <!-- Icons for Update and Delete -->
                 <div class="position-absolute top-0 end-0 mt-3 me-3">
                     <a href="{% url 'pupd' user.username %}" class="btn btn-secondary btn-sm me-2 py-2" title="Update Details">
@@ -41,6 +43,7 @@
 
                     </a>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -51,7 +54,11 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-10">
+                {% if user == profile.user %}
                 <h3 class="text-center mb-4 text-primary">Blogs by You</h3>
+                {% else %}
+                <h3 class="text-center mb-4 text-primary">Blogs by {{ profile.username }}</h3>
+                {% endif %}
                 
                 {% if user_blogs %}
                     {% for blog in user_blogs %}
@@ -59,17 +66,17 @@
                             <div class="row g-0">
                                 <!-- Blog Image -->
                                 <div class="col-md-4">
-                                    <img src="{{ blog.image.url }}" class="img-fluid rounded-start" alt="{{ blog.title }}" style="object-fit: cover; height: 100%; width: 100%;">
+                                    <a href="{% url 'bdet' blog.id %}"><img src="{{ blog.image.url }}" class="img-fluid rounded-start" alt="{{ blog.title }}" style="object-fit: cover; height: 100%; width: 100%;"></a>
                                 </div>
                                 <div class="col-md-8">
                                     <div class="card-body">
                                         <!-- Blog Title and Date -->
-                                        <a href=""><h4 class="card-title text-dark">{{ blog.title }}</h4></a>
+                                        <a href="{% url 'bdet' blog.id %}"><h4 class="card-title text-dark">{{ blog.title }}</h4></a>
                                         <p class="card-text text-muted"><small>{{ blog.date|date:"F j, Y" }}</small></p>
                                         <!-- Blog Description -->
                                         <p class="card-text">{{ blog.desc|truncatewords:20 }}</p>
                                         <!-- Read More Button -->
-                                        <a href="#" class="btn btn-outline-dark py-2">Read More</a>
+                                        <a href="{% url 'bdet' blog.id %}" class="btn btn-outline-dark py-2">Read More</a>
                                     </div>
                                 </div>
                             </div>

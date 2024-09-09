@@ -6,6 +6,11 @@ urlpatterns=[
     path('Badd/',NewBlog.as_view(),name='badd'),
     path('bdet/<int:id>',BlogDetail.as_view(),name='bdet'),
     path('Blist/<str:cat>',BlogList.as_view(),name='blist'),
+    path('Bupd/<int:id>',BlogUpdate.as_view(),name='bupd'),
+    path('blikes/<int:blog_id>',BlogLikes,name='blike'),
+    path('likelist/<int:id>',LikedList.as_view(),name='likelist'),
+    path('Bbookmark/<int:blog_id>',BlogBookmark,name='bookmark'),
+    path('Bbooklist/<int:id>',BookmarkList.as_view(),name='booklist'),
 
     path('Padd/',NewProfile.as_view(),name='padd'),
     path('Pview/<str:user>',ProfileView.as_view(),name='pview'),

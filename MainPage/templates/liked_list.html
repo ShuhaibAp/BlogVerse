@@ -3,14 +3,14 @@
 <div class="section search-result-wrap">
     <div class="container">
         <div class="row">
-            {% if blogs %}
-            <div class="col-12">
-                <div class="heading">Category: {{ blogs.0.category }}</div>
+            <div class="col-12 mb-5">
+                <div class="posts-entry-title">Liked Blogs <i class="fa-solid fa-heart" style="color: #ff0000; font-size: 18px;"></i></div>
             </div>
         </div>
         <div class="row posts-entry">
-            <div class="col-lg-8">
-                {% for blog in blogs %}
+            <div class="col-lg-10">
+            {% if likelist %}
+                {% for blog in likelist %}
                 <div class="blog-entry d-flex blog-entry-search-item">
                     <a href="{% url 'bdet' blog.id %}" class="me-4">
                         <img src="{{ blog.image.url }}" class="rounded" alt="Image" style="width: 210px; height: 250px;">
@@ -18,8 +18,8 @@
                     <div>
                         <span class="date">{{ blog.date }} &bullet; <a href="#">{{ blog.category }}</a></span>
                         <h2><a href="{% url 'bdet' blog.id %}">{{ blog.title }}</a></h2>
-                        {% if blog.desc|length > 100 %}
-                        <p>{{ blog.desc|slice:":100" }}...</p>
+                        {% if blog.desc|length > 150 %}
+                        <p>{{ blog.desc|slice:":150" }}...</p>
                         {% else %}
                         <p>{{ blog.desc }}</p>
                         {% endif %}
@@ -44,45 +44,15 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 sidebar">
-                <div class="sidebar-box">
-                    <h3 class="heading">Categories</h3>
-                    <ul class="categories">
-                        <li><a href="{% url 'blist' cat="Technology" %}">Technology</a></li>
-						<li><a href="{% url 'blist' cat="Buisiness" %}">Buisiness</a></li>
-						<li><a href="{% url 'blist' cat="Food" %}">Food</a></li>
-						<li><a href="{% url 'blist' cat="Anime" %}">Anime</a></li>
-						<li><a href="{% url 'blist' cat="Cars" %}">Cars</a></li>
-						<li><a href="{% url 'blist' cat="Story" %}">Story</a></li>
-						<li><a href="{% url 'blist' cat="Sports" %}">Sports</a></li>
-                    </ul>
-                </div>
 			{% else %}
-         
-            <div class="col-12">
-                <div class="heading">Category: {{ selected_category }}</div>
-            </div>
 			<div class="col-lg-8 ">
 				<p>No blogs found in this category.</p>
 			</div>
-            <div class="col-lg-4 sidebar ">
-                <div class="sidebar-box">
-                    <h3 class="heading">Categories</h3>
-                    <ul class="categories">
-                        <li><a href="{% url 'blist' cat="Technology" %}">Technology</a></li>
-						<li><a href="{% url 'blist' cat="Buisiness" %}">Buisiness</a></li>
-						<li><a href="{% url 'blist' cat="Food" %}">Food</a></li>
-						<li><a href="{% url 'blist' cat="Anime" %}">Anime</a></li>
-						<li><a href="{% url 'blist' cat="Cars" %}">Cars</a></li>
-						<li><a href="{% url 'blist' cat="Story" %}">Story</a></li>
-						<li><a href="{% url 'blist' cat="Sports" %}">Sports</a></li>
-                    </ul>
-                </div>
-                {% endif %}
-                <!-- END sidebar-box -->
+            {% endif %}
             </div>
         </div>
     </div>
 </div>
+
 
 {% endblock home %}

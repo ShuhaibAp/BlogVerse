@@ -1,35 +1,60 @@
 {% extends 'HomePage.html' %}
 {% block home %}
-
-<div class="site-cover site-cover-sm same-height overlay single-page" style="background-image: url('{{ blog_det.image.url }}');">
+<!-- Blog Detailing Section -->
+<div class="site-cover site-cover-sm same-height overlay single-page text-center" style="background-image: url('{{ blog_det.image.url }}'); height: 900px; width: 100%; position: relative;">
   <div class="container">
     <div class="row same-height justify-content-center">
       <div class="col-md-6">
-        <div class="post-entry text-left">
-          <h1 class="mb-4">{{ blog_det.title }}</h1>
-          <div class="post-meta align-items-center text-center">
-            <figure class="author-figure mb-0 me-3 d-inline-block">
-              <img src="{{ blog_det.profile.image.url }}" alt="Image" class="img-fluid">
-            </figure>
-            <span class="d-inline-block mt-1">By {{ blog_det.profile.username }}</span>
-            <span>&nbsp;-&nbsp; {{ blog_det.date }}</span>
-          </div>
+        <h2 class="mb-4 text-white" style="font-size: 45px;">{{ blog_det.title }}</h2>
+        <div class="post-meta align-items-center text-center">
+          <span>{{ blog_det.date }}</span>
         </div>
       </div>
     </div>
   </div>
+  
+  <!-- Bookmark Button at the Top Right -->
+  <div class="bookmark-button" style="position: absolute; top: 20px; right: 20px;z-index: 100;">
+    <form action="{% url 'bookmark' blog_det.id %}" method="POST">
+      {% csrf_token %}
+       <button type="submit" class="btn py-2">
+        {% if user in blog_det.bookmarks.all %}
+          <i class="fas fa-bookmark" style="color: skyblue; font-size: 23px;"></i>
+        {% else %}
+          <i class="far fa-bookmark" style="color: skyblue; font-size: 23px;"></i>
+        {% endif %}
+      </button>
+    </form>
+  </div>
 </div>
 
-<section class="section">
+<!-- Blog Content Section -->
   <div class="container">
     <div class="row blog-entries element-animate">
       <div class="col-md-12 col-lg-8 main-content">
-        <div class="post-content-body text-dark" style="font-size: 20px;">
+        <div class="post-content-body text-dark mt-5" style="font-size: 22px;">
           <p>{{ blog_det.desc }}</p>
         </div>
-
-        <div class="pt-5">
-          <p>Category: <a href="#">{{ blog_det.category }}</a></p>
+          <div class="pt-3 d-flex justify-content-between align-items-center">
+            <p class="m-0">Category: <a href="#">{{ blog_det.category }}</a></p>
+            <div class="d-flex align-items-center">
+              <form action="{% url 'blike' blog_det.id %}" method="POST" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn py-2">
+                  {% if user in blog_det.likes.all %}
+                    <i class="fas fa-heart" style="color: red; font-size: 20px;"></i> 
+                  {% else %}
+                    <i class="far fa-heart" style="color: red; font-size: 20px;"></i> 
+                  {% endif %}
+                  {{ blog_det.total_likes }}
+                </button>
+              </form>
+            {% if user == blog_det.profile.user %}
+            <a href="{% url 'bupd' blog_det.id %}" class="btn py-2" title="Edit Blog">
+              <i class="fas fa-edit" style="font-size: 20px; color: #214252;"></i>
+            </a>
+            {% endif %}
+          </div>
         </div>
 
         <div class="pt-5 comment-wrap">
@@ -79,24 +104,18 @@
       </div>
 
       <!-- Sidebar -->
-      <div class="col-md-12 col-lg-4 sidebar">
-        <div class="sidebar-box search-form-wrap">
-          <form action="#" class="sidebar-search-form">
-            <span class="bi-search"></span>
-            <input type="text" class="form-control" id="s" placeholder="Type a keyword and hit enter">
-          </form>
-        </div>
-
+    <div class="col-md-12 col-lg-4 sidebar">
         <div class="sidebar-box">
-          <div class="bio text-center">
-            <img src="{{ blog_det.profile.image.url }}" alt="Image Placeholder" class="img-fluid mb-3">
+          <div class="bio text-center mt-5">
+            <img src="{{ blog_det.profile.image.url }}" alt="Image Placeholder" class="mb-3" height="150px" width="150px">
             <div class="bio-body">
               <h2>{{ blog_det.profile.username }}</h2>
-              <p class="mb-4">{{ blog_det.profile.bio|slice:":100" }}...</p>
-              <p><a href="#" class="btn btn-primary btn-sm rounded px-2 py-2">Read my bio</a></p>
+              <p class="mb-4">{{ blog_det.profile.bio|slice:":150" }}...</p>
+              <p><a href="{% url 'pview' blog_det.profile.user %}" class="btn btn-primary btn-sm rounded px-2 py-2">Read my bio</a></p>
             </div>
           </div>
         </div>
+        </div>  
 
         <div class="sidebar-box">
           <h3 class="heading">Related Posts</h3>
