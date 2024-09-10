@@ -7,8 +7,8 @@ from .forms import *
 from django.contrib import messages
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
-# Create your views here.
 
+# Homepage
 class HomePage(TemplateView):
     template_name="HomePage.html"
     def get_context_data(self, **kwargs):
@@ -30,6 +30,7 @@ class HomePage(TemplateView):
         context["two_sports_blogs"] = Blog.objects.filter(category='Sports').order_by('-date')[2:4]
         return context
 
+# Profile Views
 class NewProfile(View):
     def get(self,request):
         form=ProfileForm()
@@ -44,19 +45,62 @@ class NewProfile(View):
         messages.error(request,"Please provide valid inputs!!")
         return render(request,"AddProfile.html",{"form":form_data})
 
+class ProfileView(DetailView):
+    template_name="profile_view.html"
+    context_object_name="profile"
+    def get_object(self):
+        user=get_object_or_404(User, username=self.kwargs.get('user'))
+        return get_object_or_404(Profile, user=user)
+
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        profile=self.get_object()
+        context['user_blogs']=Blog.objects.filter(profile=profile)
+        return context
+
+class UpdateProfile(UpdateView):
+    template_name="profile_update.html"
+    form_class=ProfileForm
+    queryset=Profile.objects.all()
+    pk_url_kwarg='user'
+
+    def get_object(self):
+        user=get_object_or_404(User, username=self.kwargs['user'])
+        return get_object_or_404(Profile, user=user)
+
+    def get_success_url(self):
+        return reverse_lazy('pview', kwargs={'user': self.kwargs['user']})
+
+def DeleteProfile(request, user):
+    user=get_object_or_404(User, username=user)
+    profile=get_object_or_404(Profile, user=user)
+    profile.delete()
+    return redirect('padd')
+
+def FollowProfile(request, profile_id):
+    profile=get_object_or_404(Profile, id=profile_id)
+    if request.user.profile in profile.followers.all():
+        profile.followers.remove(request.user.profile)
+    else:
+        profile.followers.add(request.user.profile)
+    return redirect('pview', user=profile.user.username)
+
+# Blog Views
 class NewBlog(View):
     def get(self, request):
+        if not request.user.is_authenticated:
+            messages.error(request, "You must be logged in to create a blog.")
+            return redirect('log')
+        if not Profile.objects.filter(user=request.user).exists():
+            return redirect('padd')
         form=BlogForm()
         return render(request, "Blog_add.html", {"form": form})
     
     def post(self, request):
-        if not request.user.is_authenticated:
-            messages.error(request, "You must be logged in to create a blog.")
-            return redirect('log')
         form = BlogForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             blog = form.save(commit=False)
-            profiles = Profile.objects.filter(user=request.user)
+            profiles=Profile.objects.filter(user=request.user)
             if profiles.exists():
                 blog.profile=profiles.first()
             else:
@@ -67,6 +111,10 @@ class NewBlog(View):
         messages.error(request, "Please provide valid inputs.")
         return render(request, "AddBlog.html", {"form": form})
 
+def BlogDelete(request,*args,**kwargs):
+    bid=kwargs.get('id')
+    Blog.objects.get(id=bid).delete()
+    return redirect('home')
 
 class BlogList(ListView):
     template_name="blog_list.html"
@@ -126,35 +174,4 @@ class BookmarkList(ListView):
         user_id = self.kwargs.get('id')
         return Blog.objects.filter(bookmarks=user_id)
 
-class ProfileView(DetailView):
-    template_name="profile_view.html"
-    context_object_name="profile"
-    def get_object(self):
-        user=get_object_or_404(User, username=self.kwargs.get('user'))
-        return get_object_or_404(Profile, user=user)
-
-    def get_context_data(self, **kwargs):
-        context=super().get_context_data(**kwargs)
-        profile=self.get_object()
-        context['user_blogs']=Blog.objects.filter(profile=profile)
-        return context
-
-class UpdateProfile(UpdateView):
-    template_name="profile_update.html"
-    form_class=ProfileForm
-    queryset=Profile.objects.all()
-    pk_url_kwarg='user'
-
-    def get_object(self):
-        user=get_object_or_404(User, username=self.kwargs['user'])
-        return get_object_or_404(Profile, user=user)
-
-    def get_success_url(self):
-        return reverse_lazy('pview', kwargs={'user': self.kwargs['user']})
-
-def DeleteProfile(request, user):
-    user=get_object_or_404(User, username=user)
-    profile=get_object_or_404(Profile, user=user)
-    profile.delete()
-    return redirect('padd')
 

@@ -24,7 +24,7 @@
                         <p>{{ blog.desc }}</p>
                         {% endif %}
                         <p><a href="{% url 'bdet' blog.id %}" class="btn btn-sm btn-outline-primary">Read More</a></p>
-						<a href="profile_url_1" class="d-flex align-items-center mt-1">
+						<a href="{% url 'pview' blog.profile.user %}" class="d-flex align-items-center mt-1">
 							<img src="{{ blog.profile.image.url }}" alt="Profile Image" class="rounded-circle" style="width: 40px; height: 40px;">
 							<span class="ms-2">{{ blog.profile.username }}</span>
                         </a>

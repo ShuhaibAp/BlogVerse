@@ -7,6 +7,7 @@ urlpatterns=[
     path('bdet/<int:id>',BlogDetail.as_view(),name='bdet'),
     path('Blist/<str:cat>',BlogList.as_view(),name='blist'),
     path('Bupd/<int:id>',BlogUpdate.as_view(),name='bupd'),
+    path('Bdel/<int:id>',BlogDelete,name='bdel'),
     path('blikes/<int:blog_id>',BlogLikes,name='blike'),
     path('likelist/<int:id>',LikedList.as_view(),name='likelist'),
     path('Bbookmark/<int:blog_id>',BlogBookmark,name='bookmark'),
@@ -16,4 +17,5 @@ urlpatterns=[
     path('Pview/<str:user>',ProfileView.as_view(),name='pview'),
     path('Pupd/<str:user>',UpdateProfile.as_view(),name='pupd'),
     path('Pdel/<str:user>',DeleteProfile,name='pdel'),
+    path('Pfollow/<int:profile_id>',FollowProfile,name='pfoll'),
 ]
