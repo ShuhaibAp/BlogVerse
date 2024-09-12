@@ -12,6 +12,7 @@ urlpatterns=[
     path('likelist/<int:id>',LikedList.as_view(),name='likelist'),
     path('Bbookmark/<int:blog_id>',BlogBookmark,name='bookmark'),
     path('Bbooklist/<int:id>',BookmarkList.as_view(),name='booklist'),
+    path('brevadd/<int:id>',AddReview,name='revadd'),
 
     path('Padd/',NewProfile.as_view(),name='padd'),
     path('Pview/<str:user>',ProfileView.as_view(),name='pview'),

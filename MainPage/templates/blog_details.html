@@ -63,47 +63,38 @@
         </div>
 
         <div class="pt-5 comment-wrap">
-          <h3 class="mb-5 heading">6 Comments</h3>
+          <h3 class="mb-5 heading">{{total_reviews}} Comments</h3>
+          {% if review %}
           <ul class="comment-list">
             <!-- Example comments, replace with actual comments if available -->
+            {% for review in review %}
             <li class="comment">
               <div class="vcard">
-                <img src="images/person_1.jpg" alt="Image placeholder">
+                <img src="{{review.profile.image.url}}"  class="rounded-circle" style="width: 40px; height: 40px;">
               </div>
               <div class="comment-body">
-                <h3>Jean Doe</h3>
-                <div class="meta">January 9, 2018 at 2:21pm</div>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum necessitatibus, ipsam impedit vitae autem, eum officia, fugiat saepe enim sapiente iste iure! Quam voluptas earum impedit necessitatibus, nihil?</p>
+                <h3>{{review.profile.username}}</h3>
+                <div class="meta">{{review.date}}</div>
+                <p>{{review.comment}}</p>
                 <p><a href="#" class="reply rounded">Reply</a></p>
               </div>
             </li>
-            <!-- Add more comments as needed -->
+            {% endfor %}
           </ul>
+          {% endif %}
 
           <div class="comment-form-wrap pt-5">
-            <h3 class="mb-5">Leave a comment</h3>
-            <form action="#" class="p-5 bg-light">
+            <h3 class="mb-2">Leave a comment</h3>
+            <form method="post" action="{% url 'revadd' blog_det.id %}">
+              {% csrf_token %}
               <div class="form-group">
-                <label for="name">Name *</label>
-                <input type="text" class="form-control" id="name">
+                  <label for="id_comment"></label>
+                  {{ review_form.comment }}
               </div>
               <div class="form-group">
-                <label for="email">Email *</label>
-                <input type="email" class="form-control" id="email">
+                  <button type="submit" class="btn btn-primary">Post Comment</button>
               </div>
-              <div class="form-group">
-                <label for="website">Website</label>
-                <input type="url" class="form-control" id="website">
-              </div>
-
-              <div class="form-group">
-                <label for="message">Message</label>
-                <textarea id="message" cols="30" rows="10" class="form-control"></textarea>
-              </div>
-              <div class="form-group">
-                <input type="submit" value="Post Comment" class="btn btn-primary">
-              </div>
-            </form>
+          </form>
           </div>
         </div>
       </div>
@@ -121,36 +112,6 @@
           </div>
         </div>
         </div>  
-
-        <div class="sidebar-box">
-          <h3 class="heading">Related Posts</h3>
-          <div class="post-entry-sidebar">
-            <ul>
-              <li>
-                <a href="">
-                  <img src="images/img_1_sq.jpg" alt="Image placeholder" class="me-4 rounded">
-                  <div class="text">
-                    <h4>There’s a Cool New Way for Men to Wear Socks and Sandals</h4>
-                    <div class="post-meta">
-                      <span class="mr-2">March 15, 2018 </span>
-                    </div>
-                  </div>
-                </a>
-              </li>
-              <!-- Add more related posts as needed -->
-            </ul>
-          </div>
-        </div>
-
-        <div class="sidebar-box">
-          <h3 class="heading">Categories</h3>
-          <ul class="categories">
-            <li><a href="#">Food <span>(12)</span></a></li>
-            <li><a href="#">Travel <span>(22)</span></a></li>
-            <li><a href="#">Lifestyle <span>(37)</span></a></li>
-            <li><a href="#">Business <span>(42)</span></a></li>
-            <li><a href="#">Adventure <span>(14)</span></a></li>
-          </ul>
         </div>
       </div>
     </div>
@@ -160,20 +121,22 @@
 <section class="section posts-entry posts-entry-sm bg-light">
   <div class="container">
     <div class="row mb-4">
-      <div class="col-12 text-uppercase text-black">More Blog Posts</div>
+      <div class="col-12 text-uppercase text-black">Related Blogs</div>
     </div>
     <div class="row">
+      {% for rel in relProducts %}
       <div class="col-md-6 col-lg-3">
         <div class="blog-entry">
           <a href="single.html" class="img-link">
-            <img src="images/img_1_horizontal.jpg" alt="Image" class="img-fluid">
+            <img src="{{rel.image.url}}" alt="Image" class="img-fluid">
           </a>
-          <span class="date">Apr. 14th, 2022</span>
-          <h2><a href="single.html">Thought you loved Python? Wait until you meet Rust</a></h2>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-          <p><a href="#" class="read-more">Continue Reading</a></p>
+          <span class="date">{{rel.date}}</span>
+          <h2><a href="single.html">{{rel.title|slice:":50"}}...</a></h2>
+          <p>{{rel.desc|slice:":100"}}...</p>
+          <p><a href="{% url 'bdet' rel.id %}" class="btn btn-sm btn-outline-primary">Read More</a></p>
         </div>
       </div>
+      {% endfor %}
       <!-- Add more blog entries as needed -->
     </div>
   </div>

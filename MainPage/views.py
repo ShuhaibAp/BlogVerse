@@ -4,6 +4,7 @@ from django.urls import reverse_lazy,reverse
 from django.views import View
 from django.views.generic import TemplateView,DetailView,ListView,CreateView,UpdateView,View
 from .forms import *
+from .models import *
 from django.contrib import messages
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
@@ -13,21 +14,21 @@ class HomePage(TemplateView):
     template_name="HomePage.html"
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["latest_blogs"] = Blog.objects.all().order_by('-date')[:6]
+        context["latest_blogs"]=Blog.objects.all().order_by('-date')[:6]
 
-        context["tech_blogs"] = Blog.objects.filter(category='Technology').order_by('-date')[:2]
-        context["side_tech_blogs"] = Blog.objects.filter(category='Technology').order_by('-date')[2:5]
-        context["end_tech_blogs"] = Blog.objects.filter(category='Technology').order_by('-date')[5:9]
+        context["tech_blogs"]=Blog.objects.filter(category='Technology').order_by('-date')[:2]
+        context["side_tech_blogs"]=Blog.objects.filter(category='Technology').order_by('-date')[2:5]
+        context["end_tech_blogs"]=Blog.objects.filter(category='Technology').order_by('-date')[5:9]
 
-        context["main_anime_blogs"] = Blog.objects.filter(category='Anime').order_by('-date')[:2]
-        context["side_anime_blogs"] = Blog.objects.filter(category='Anime').order_by('-date')[2:5]
-        context["end_anime_blogs"] = Blog.objects.filter(category='Anime').order_by('-date')[5:9]
+        context["main_anime_blogs"]=Blog.objects.filter(category='Anime').order_by('-date')[:2]
+        context["side_anime_blogs"]=Blog.objects.filter(category='Anime').order_by('-date')[2:5]
+        context["end_anime_blogs"]=Blog.objects.filter(category='Anime').order_by('-date')[5:9]
 
-        context["story_blogs"] = Blog.objects.filter(category='Story').order_by('-date')[:9]
+        context["story_blogs"]=Blog.objects.filter(category='Story').order_by('-date')[:9]
 
-        context["vert_sports_blogs"] = Blog.objects.filter(category='Sports').order_by('-date')[:1]
-        context["horiz_sports_blogs"] = Blog.objects.filter(category='Sports').order_by('-date')[1:2]
-        context["two_sports_blogs"] = Blog.objects.filter(category='Sports').order_by('-date')[2:4]
+        context["vert_sports_blogs"]=Blog.objects.filter(category='Sports').order_by('-date')[:1]
+        context["horiz_sports_blogs"]=Blog.objects.filter(category='Sports').order_by('-date')[1:2]
+        context["two_sports_blogs"]=Blog.objects.filter(category='Sports').order_by('-date')[2:4]
         return context
 
 # Profile Views
@@ -135,6 +136,35 @@ class BlogDetail(DetailView):
 
     def get_object(self):
         return get_object_or_404(Blog, id=self.kwargs['id'])
+
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        blog=self.get_object()
+        #taking the reviews from table and passing to 'review' context.
+        reviews=Review.objects.filter(blog=blog)
+        rcount=reviews.count()
+        context['review']=reviews
+        context['total_reviews']=rcount
+        context['review_form']=ReviewForm()
+        context['relProducts']=Blog.objects.filter(category=blog.category).exclude(id=blog.id).order_by('-date')[:4]
+        return context
+    
+def AddReview(request, *args, **kwargs):
+    blog_id=kwargs.get('id')
+    blog=Blog.objects.get(id=blog_id)
+    try:
+        profile=get_object_or_404(Profile, user=request.user)
+    except Profile.DoesNotExist:
+        return redirect('padd')
+    if request.method=='POST':
+        form=ReviewForm(data=request.POST)
+        if form.is_valid():
+            review=form.save(commit=False)
+            review.profile=profile
+            review.blog=blog
+            review.save()
+            return redirect('bdet', id=blog.id)
+    return redirect('bdet', id=blog.id)
 
 class BlogUpdate(UpdateView):
     template_name="blog_update.html"

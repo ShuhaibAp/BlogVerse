@@ -48,4 +48,8 @@ class Blog(models.Model):
     def total_bookmarks(self):
         return self.bookmarks.count()
 
-        
+class Review(models.Model):
+    blog=models.ForeignKey(Blog,on_delete=models.CASCADE,related_name="Blog_reviews")
+    profile=models.ForeignKey(Profile,on_delete=models.CASCADE)
+    date=models.DateField(auto_now_add=True)
+    comment=models.TextField()

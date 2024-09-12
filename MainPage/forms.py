@@ -22,3 +22,11 @@ class BlogForm(forms.ModelForm):
             'category': forms.Select(attrs={'class': 'form-control'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model=Review
+        fields=["comment"]
+        widgets={
+        'comment':forms.Textarea(attrs={"cols":30,"rows":5,"class":"form-control border border-primary"})
+        }
