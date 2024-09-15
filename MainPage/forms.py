@@ -14,7 +14,7 @@ class ProfileForm(forms.ModelForm):
 class BlogForm(forms.ModelForm):
     class Meta:
         model = Blog
-        exclude = ['profile']
+        exclude = ['profile','likes','bookmarks']
         
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),

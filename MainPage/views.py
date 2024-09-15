@@ -8,6 +8,7 @@ from .models import *
 from django.contrib import messages
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
+from django.db.models import Q
 
 # Homepage
 class HomePage(TemplateView):
@@ -30,6 +31,13 @@ class HomePage(TemplateView):
         context["horiz_sports_blogs"]=Blog.objects.filter(category='Sports').order_by('-date')[1:2]
         context["two_sports_blogs"]=Blog.objects.filter(category='Sports').order_by('-date')[2:4]
         return context
+#search 
+def blog_search(request):
+    query = request.GET.get('q')
+    blogs = Blog.objects.all()
+    if query:
+        blogs = blogs.filter( Q(title__icontains=query) | Q(category__icontains=query) | Q(profile__user__username__icontains=query))
+    return render(request, 'blog_search.html', {'blogs': blogs, 'query': query})
 
 # Profile Views
 class NewProfile(View):
@@ -120,6 +128,7 @@ def BlogDelete(request,*args,**kwargs):
 class BlogList(ListView):
     template_name="blog_list.html"
     context_object_name='blogs'
+    paginate_by = 6
     def get_queryset(self):
         category=self.kwargs.get('cat')
         return Blog.objects.filter(category=category)
