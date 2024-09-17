@@ -3,6 +3,7 @@ from django.shortcuts import render,redirect
 from django.urls import reverse_lazy,reverse
 from django.views import View
 from django.views.generic import TemplateView,DetailView,ListView,CreateView,UpdateView,View
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .forms import *
 from .models import *
 from django.contrib import messages
@@ -55,8 +56,9 @@ class NewProfile(View):
         return render(request,"AddProfile.html",{"form":form_data})
 
 class ProfileView(DetailView):
-    template_name="profile_view.html"
-    context_object_name="profile"
+    template_name = "profile_view.html"
+    context_object_name = "profile"
+    
     def get_object(self):
         user=get_object_or_404(User, username=self.kwargs.get('user'))
         return get_object_or_404(Profile, user=user)
@@ -64,7 +66,19 @@ class ProfileView(DetailView):
     def get_context_data(self, **kwargs):
         context=super().get_context_data(**kwargs)
         profile=self.get_object()
-        context['user_blogs']=Blog.objects.filter(profile=profile)
+        # Fetch user blogs
+        user_blogs=Blog.objects.filter(profile=profile)
+        # Pagination setup
+        paginator=Paginator(user_blogs, 5)  # Show 5 blogs per page
+        page=self.request.GET.get('page')
+        
+        try:
+            blogs_paginated=paginator.page(page)
+        except PageNotAnInteger:
+            blogs_paginated=paginator.page(1)  # If page is not an integer, show the first page
+        except EmptyPage:
+            blogs_paginated=paginator.page(paginator.num_pages)  # If page is out of range, show last page
+        context['user_blogs']=blogs_paginated
         return context
 
 class UpdateProfile(UpdateView):
@@ -128,7 +142,7 @@ def BlogDelete(request,*args,**kwargs):
 class BlogList(ListView):
     template_name="blog_list.html"
     context_object_name='blogs'
-    paginate_by = 6
+    paginate_by=6
     def get_queryset(self):
         category=self.kwargs.get('cat')
         return Blog.objects.filter(category=category)
@@ -152,7 +166,7 @@ class BlogDetail(DetailView):
         #taking the reviews from table and passing to 'review' context.
         reviews=Review.objects.filter(blog=blog)
         rcount=reviews.count()
-        context['review']=reviews
+        context['review']=reviews.order_by('-date')[:5]
         context['total_reviews']=rcount
         context['review_form']=ReviewForm()
         context['relProducts']=Blog.objects.filter(category=blog.category).exclude(id=blog.id).order_by('-date')[:4]
@@ -174,6 +188,17 @@ def AddReview(request, *args, **kwargs):
             review.save()
             return redirect('bdet', id=blog.id)
     return redirect('bdet', id=blog.id)
+
+class ReviewList(ListView):
+    template_name="reviews_list.html"
+    context_object_name="allrevs"
+
+    def get_blog(self):
+        return get_object_or_404(Blog, id=self.kwargs['id'])
+
+    def get_queryset(self):
+        blog = self.get_blog()
+        return Review.objects.filter(blog=blog)
 
 class BlogUpdate(UpdateView):
     template_name="blog_update.html"

@@ -63,7 +63,7 @@
         </div>
 
         <div class="pt-5 comment-wrap">
-          <h3 class="mb-5 heading">{{total_reviews}} Comments</h3>
+          <h3 class="mb-5 heading">Reviews</h3>
           {% if review %}
           <ul class="comment-list">
             <!-- Example comments, replace with actual comments if available -->
@@ -80,9 +80,11 @@
               </div>
             </li>
             {% endfor %}
-          </ul>
+          </ul> 
           {% endif %}
-          <a href="" class="d-flex justify-content-center w-100 border border-dark">All 17 comments ></a>
+          {% if total_reviews > 5 %}
+          <a href="{% url 'allrev' blog_det.id %}" class="d-flex justify-content-center w-100 text-primary">All {{total_reviews}} reviews ></a>
+          {% endif %}
           <div class="comment-form-wrap pt-5">
             <h3 class="mb-2">Leave a comment</h3>
             <form method="post" action="{% url 'revadd' blog_det.id %}">

@@ -1,0 +1,31 @@
+{% extends 'HomePage.html' %}
+{% block home %}
+
+<div class="container mt-5">
+    <h2 class="mb-5 text-center text-dark">Reviews</h2>
+
+    {% if allrevs %}
+    <div class="comments-section">
+        {% for review in allrevs %}
+        <div class="comment-item border-bottom pb-4 mb-4">
+            <div class="d-flex align-items-start">
+                <!-- User Profile Picture -->
+                <div class="profile-image me-3">
+                    <img src="{{ review.profile.image.url }}" alt="User Image" class="rounded-circle" style="width: 60px; height: 60px;">
+                </div>
+
+                <!-- Comment Body -->
+                <div class="comment-content">
+                    <h5 class="mb-1">{{ review.profile.user.username }}</h5>
+                    <small class="text-muted">{{ review.date|date:"M d, Y" }}</small>
+                    <p class="mt-2">{{ review.comment }}</p>
+                    <p><a href="#" class="reply rounded">Reply</a></p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+{% endblock home %}

@@ -5,93 +5,106 @@
         <div class="row">
             {% if blogs %}
             <div class="col-12">
-                <div class="heading">Category: {{ blogs.0.category }}</div>
+                <h3 class="text-center text-primary mb-4">Category: {{ blogs.0.category }}</h3>
             </div>
         </div>
+
         <div class="row posts-entry">
+            <!-- Blog Posts Section -->
             <div class="col-lg-8">
                 {% for blog in blogs %}
-                <div class="blog-entry d-flex blog-entry-search-item">
+                <div class="blog-entry d-flex blog-entry-search-item mb-4">
                     <a href="{% url 'bdet' blog.id %}" class="me-4">
-                        <img src="{{ blog.image.url }}" class="rounded" alt="Image" style="width: 210px; height: 250px;">
+                        <img src="{{ blog.image.url }}" class="rounded" alt="{{ blog.title }}" style="width: 210px; height: 250px; object-fit: cover;">
                     </a>
                     <div>
-                        <span class="date">{{ blog.date }} &bullet; <a href="#">{{ blog.category }}</a></span>
-                        <h2><a href="{% url 'bdet' blog.id %}">{{ blog.title }}</a></h2>
-                        {% if blog.desc|length > 100 %}
+                        <span class="date">{{ blog.date|date:"F j, Y" }} &bullet; <a href="#">{{ blog.category }}</a></span>
+                        <h2><a href="{% url 'bdet' blog.id %}" class="text-dark">{{ blog.title }}</a></h2>
                         <p>{{ blog.desc|slice:":100" }}...</p>
-                        {% else %}
-                        <p>{{ blog.desc }}</p>
-                        {% endif %}
-                        <p><a href="{% url 'bdet' blog.id %}" class="btn btn-sm btn-outline-primary">Read More</a></p>
-						<a href="{% url 'pview' blog.profile.user %}" class="d-flex align-items-center mt-1">
-							<img src="{{ blog.profile.image.url }}" alt="Profile Image" class="rounded-circle" style="width: 40px; height: 40px;">
-							<span class="ms-2">{{ blog.profile.username }}</span>
+                        <a href="{% url 'bdet' blog.id %}" class="btn btn-sm btn-outline-primary">Read More</a>
+                        <a href="{% url 'pview' blog.profile.user %}" class="d-flex align-items-center mt-2">
+                            <img src="{{ blog.profile.image.url }}" alt="Profile Image" class="rounded-circle" style="width: 40px; height: 40px;">
+                            <span class="ms-2">{{ blog.profile.username }}</span>
                         </a>
                     </div>
                 </div>
                 {% endfor %}
-                <div class="row text-start pt-5 border-top">
+                
+                <!-- Pagination Section -->
+                <div class="row pt-4">
                     <div class="col-md-12">
-                        <div class="pagination">
-                        <span class="step-links">
-                            {% if page_obj.has_previous %}
-                            <a href="?page=1" class="btn btn-outline-primary py-2">&laquo; first</a>
-                            <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-primary py-2">previous</a>
-                            {% endif %}
-
-                            {% if page_obj.has_next %}
-                            <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-primary py-2" >next</a>
-                            <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline-primary py-2" >last &raquo;</a>
-                            {% endif %}
-                            &nbsp;
-                            <span class="current text-primary">
-                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                            </span>
-                        </span>
-                        </div>
+                        <nav class="pagination-wrap text-center">
+                            <ul class="pagination justify-content-center">
+                                {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a href="?page=1" class="page-link">First</a>
+                                </li>
+                                <li class="page-item">
+                                    <a href="?page={{ page_obj.previous_page_number }}" class="page-link">Prev</a>
+                                </li>
+                                {% endif %}
+                                
+                                {% for num in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == num %}
+                                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                                    {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                                        <li class="page-item"><a href="?page={{ num }}" class="page-link">{{ num }}</a></li>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a href="?page={{ page_obj.next_page_number }}" class="page-link">next</a>
+                                </li>
+                                <li class="page-item">
+                                    <a href="?page={{ page_obj.paginator.num_pages }}" class="page-link">Last</a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
+
+            <!-- Sidebar for Categories -->
             <div class="col-lg-4 sidebar">
                 <div class="sidebar-box">
-                    <h3 class="heading">Categories</h3>
+                    <h4 class="heading">Categories</h4>
                     <ul class="categories">
-                        <li><a href="{% url 'blist' cat="Technology" %}">Technology</a></li>
-						<li><a href="{% url 'blist' cat="Buisiness" %}">Buisiness</a></li>
-						<li><a href="{% url 'blist' cat="Food" %}">Food</a></li>
-						<li><a href="{% url 'blist' cat="Anime" %}">Anime</a></li>
-						<li><a href="{% url 'blist' cat="Cars" %}">Cars</a></li>
-						<li><a href="{% url 'blist' cat="Story" %}">Story</a></li>
-						<li><a href="{% url 'blist' cat="Sports" %}">Sports</a></li>
+                        <li><a href="{% url 'blist' cat='Technology' %}">Technology</a></li>
+                        <li><a href="{% url 'blist' cat='Buisiness' %}">Business</a></li>
+                        <li><a href="{% url 'blist' cat='Food' %}">Food</a></li>
+                        <li><a href="{% url 'blist' cat='Anime' %}">Anime</a></li>
+                        <li><a href="{% url 'blist' cat='Cars' %}">Cars</a></li>
+                        <li><a href="{% url 'blist' cat='Story' %}">Story</a></li>
+                        <li><a href="{% url 'blist' cat='Sports' %}">Sports</a></li>
                     </ul>
                 </div>
-			{% else %}
-         
-            <div class="col-12">
-                <div class="heading">Category: {{ selected_category }}</div>
             </div>
-			<div class="col-lg-8 ">
-				<p>No blogs found in this category.</p>
-			</div>
-            <div class="col-lg-4 sidebar ">
+            {% else %}
+            <!-- No Blogs Found Message -->
+            <div class="col-12 text-center">
+                <h3 class="text-center text-primary mb-4">Category: {{ selected_category }}</h3>
+                <p>No blogs found in this category.</p>
+            </div>
+
+            <!-- Sidebar for Categories when no blogs -->
+            <div class="col-lg-4 offset-lg-4 sidebar">
                 <div class="sidebar-box">
-                    <h3 class="heading">Categories</h3>
+                    <h4 class="heading">Categories</h4>
                     <ul class="categories">
-                        <li><a href="{% url 'blist' cat="Technology" %}">Technology</a></li>
-						<li><a href="{% url 'blist' cat="Buisiness" %}">Buisiness</a></li>
-						<li><a href="{% url 'blist' cat="Food" %}">Food</a></li>
-						<li><a href="{% url 'blist' cat="Anime" %}">Anime</a></li>
-						<li><a href="{% url 'blist' cat="Cars" %}">Cars</a></li>
-						<li><a href="{% url 'blist' cat="Story" %}">Story</a></li>
-						<li><a href="{% url 'blist' cat="Sports" %}">Sports</a></li>
+                        <li><a href="{% url 'blist' cat='Technology' %}">Technology</a></li>
+                        <li><a href="{% url 'blist' cat='Buisiness' %}">Business</a></li>
+                        <li><a href="{% url 'blist' cat='Food' %}">Food</a></li>
+                        <li><a href="{% url 'blist' cat='Anime' %}">Anime</a></li>
+                        <li><a href="{% url 'blist' cat='Cars' %}">Cars</a></li>
+                        <li><a href="{% url 'blist' cat='Story' %}">Story</a></li>
+                        <li><a href="{% url 'blist' cat='Sports' %}">Sports</a></li>
                     </ul>
                 </div>
-                {% endif %}
-                <!-- END sidebar-box -->
             </div>
+            {% endif %}
         </div>
     </div>
 </div>
-
 {% endblock home %}
