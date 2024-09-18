@@ -15,6 +15,7 @@ urlpatterns=[
     path('Bbooklist/<int:id>',BookmarkList.as_view(),name='booklist'),
     path('brevadd/<int:id>',AddReview,name='revadd'),
     path('revall/<int:id>',ReviewList.as_view(),name='allrev'),
+    path('revedit/<int:review_id>',ReviewEdit,name='editrev'),
 
     path('Padd/',NewProfile.as_view(),name='padd'),
     path('Pview/<str:user>',ProfileView.as_view(),name='pview'),

@@ -19,7 +19,11 @@
                     <h5 class="mb-1">{{ review.profile.user.username }}</h5>
                     <small class="text-muted">{{ review.date|date:"M d, Y" }}</small>
                     <p class="mt-2">{{ review.comment }}</p>
-                    <p><a href="#" class="reply rounded">Reply</a></p>
+                    {% if user == review.profile.user %}
+                        <a href="{% url 'editrev' review.id %}" class="btn py-2 " title="Edit Blog">
+                        <i class="fas fa-edit" style="font-size: 20px; color: #214252;"></i>
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -76,7 +76,11 @@
                 <h3>{{review.profile.username}}</h3>
                 <div class="meta">{{review.date}}</div>
                 <p>{{review.comment}}</p>
-                <p><a href="#" class="reply rounded">Reply</a></p>
+                {% if user == review.profile.user %}
+                <a href="{% url 'editrev' review.id %}" class="btn py-2 " title="Edit Blog">
+                  <i class="fas fa-edit" style="font-size: 20px; color: #214252;"></i>
+                </a>
+                {% endif %}
               </div>
             </li>
             {% endfor %}

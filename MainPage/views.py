@@ -200,6 +200,32 @@ class ReviewList(ListView):
         blog = self.get_blog()
         return Review.objects.filter(blog=blog)
 
+from django.shortcuts import get_object_or_404, redirect
+from django.http import HttpResponseForbidden
+from django.urls import reverse
+
+def ReviewEdit(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+    blog=review.blog.id
+    # Ensure only the owner of the review can edit it
+    if review.profile.user != request.user:
+        return HttpResponseForbidden()
+
+    # Get 'next' parameter from the request to redirect back to the correct page
+    # next_url = request.GET.get('next') or request.POST.get('next') or reverse('allrev' , id =review_id)
+
+    if request.method == 'POST':
+        form = ReviewForm(data=request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            # Redirect to the original page or fallback to 'reviews_list'
+            return redirect("allrev",id=blog)
+    else:
+        form = ReviewForm(instance=review)
+    
+    return render(request, 'reviews_edit.html', {'form': form, 'review': review})
+
+
 class BlogUpdate(UpdateView):
     template_name="blog_update.html"
     form_class=BlogForm

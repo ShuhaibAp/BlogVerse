@@ -1,0 +1,14 @@
+{% extends 'HomePage.html' %}
+{% block home %}
+<form method="post" action="">
+    {% csrf_token %}
+    <div class="form-group mx-5">
+        <label for="id_comment"></label>
+        {{ form.comment }}
+    </div>
+    <div class="form-group mx-5">
+        <!-- <input type="hidden" name="next" value="{{ next_url }}"> -->
+        <button type="submit" class="btn btn-primary mb-5">Post Comment</button>
+    </div>
+</form>
+{% endblock home %}
