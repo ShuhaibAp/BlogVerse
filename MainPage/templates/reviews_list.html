@@ -11,7 +11,7 @@
             <div class="d-flex align-items-start">
                 <!-- User Profile Picture -->
                 <div class="profile-image me-3">
-                    <img src="{{ review.profile.image.url }}" alt="User Image" class="rounded-circle" style="width: 60px; height: 60px;">
+                    <img src="{{ review.profile.image.url }}" alt="User Image" class="rounded-circle" style="width: 50px; height: 50px;">
                 </div>
 
                 <!-- Comment Body -->
@@ -20,9 +20,14 @@
                     <small class="text-muted">{{ review.date|date:"M d, Y" }}</small>
                     <p class="mt-2">{{ review.comment }}</p>
                     {% if user == review.profile.user %}
-                        <a href="{% url 'editrev' review.id %}" class="btn py-2 " title="Edit Blog">
-                        <i class="fas fa-edit" style="font-size: 20px; color: #214252;"></i>
+                        <div class="d-flex justify-content-start w-100">
+                        <a href="{% url 'editrev' review.id %}?next={{ request.path }}" class="btn py-2" title="Edit Blog">
+                        <i class="fas fa-edit" style="font-size: 16px; color: #214252;"></i>
                         </a>
+                        <a href="{% url 'revdel' review.id %}?next={{ request.path }}" class="btn py-2" title="Edit Blog">
+                        <i class="fas fa-trash" style="font-size: 15px; color: red;"></i>
+                        </a>
+                        </div>
                     {% endif %}
                 </div>
             </div>

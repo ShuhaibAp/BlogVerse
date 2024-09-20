@@ -16,7 +16,8 @@ urlpatterns=[
     path('brevadd/<int:id>',AddReview,name='revadd'),
     path('revall/<int:id>',ReviewList.as_view(),name='allrev'),
     path('revedit/<int:review_id>',ReviewEdit,name='editrev'),
-
+    path('revdel/<int:review_id>',ReviewDelete,name='revdel'),
+#Profile section
     path('Padd/',NewProfile.as_view(),name='padd'),
     path('Pview/<str:user>',ProfileView.as_view(),name='pview'),
     path('Pupd/<str:user>',UpdateProfile.as_view(),name='pupd'),

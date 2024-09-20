@@ -75,7 +75,7 @@
 								<li><a href="{% url 'booklist' user.id %}">Bookmarks</a></li>
 								<li><a href="{% url 'likelist' user.id %}">Liked</a></li>
 								<form action="{% url 'blog_search' %}" method="GET" class="search-form d-none d-lg-inline-block mx-5">
-									<input type="text" name="q" class="form-control" placeholder="Search..." value="{{ request.GET.q }}">
+									<input type="text" name="search-value" class="form-control" placeholder="Search..." value="{{ request.GET.q }}">
 									<span class="bi-search"></span> <!-- Just for the icon -->
 								</form>
 						</div>
@@ -390,59 +390,58 @@
 		</div>
 {% endblock home %}
 	<!-- Footer -->
-<footer class="site-footer text-light ">
+<footer class="site-footer text-light">
     <div class="container">
         <div class="row">
             <div class="col-lg-3">
                 <div class="widget">
                     <h3 class="mb-4 text-light">About</h3>
                     <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                </div> <!-- /.widget -->
-            </div> <!-- /.col-lg-4 -->
+                </div>
+            </div>
             <div class="col-lg-3">
                 <div class="widget">
                     <h3 class="mb-4 text-light">Links</h3>
                     <ul class="list-unstyled">
-						<li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'home' %}">Home</a></li>
                         <li><a href="#">About Us</a></li>
                         <li><a href="#">Contact Us</a></li>
                     </ul>
-                </div> <!-- /.widget -->
-            </div> <!-- /.col-lg-4 -->
+                </div>
+            </div>
             <div class="col-lg-3">
                 <div class="widget">
                     <h3 class="mb-4 text-light">Categories</h3>
                     <ul class="dropdown list-unstyled">
-						<li><a href="{% url 'blist' cat="Technology" %}">Technology</a></li>
-						<li><a href="{% url 'blist' cat="Buisiness" %}">Buisiness</a></li>
-						<li><a href="{% url 'blist' cat="Food" %}">Food</a></li>
-						<li><a href="{% url 'blist' cat="Anime" %}">Anime</a></li>
-						<li><a href="{% url 'blist' cat="Cars" %}">Cars</a></li>
-						<li><a href="{% url 'blist' cat="Story" %}">Story</a></li>
-						<li><a href="{% url 'blist' cat="Sports" %}">Sports</a></li>
-					</ul>
-                </div> <!-- /.widget -->
-            </div> <!-- /.col-lg-4 -->
+                        <li><a href="{% url 'blist' cat='Technology' %}">Technology</a></li>
+                        <li><a href="{% url 'blist' cat='Buisiness' %}">Buisiness</a></li>
+                        <li><a href="{% url 'blist' cat='Food' %}">Food</a></li>
+                        <li><a href="{% url 'blist' cat='Anime' %}">Anime</a></li>
+                        <li><a href="{% url 'blist' cat='Cars' %}">Cars</a></li>
+                        <li><a href="{% url 'blist' cat='Story' %}">Story</a></li>
+                        <li><a href="{% url 'blist' cat='Sports' %}">Sports</a></li>
+                    </ul>
+                </div>
+            </div>
             <div class="col-lg-3">
                 <div class="widget">
                     <h3 class="mb-4 text-light">Social</h3>
                     <ul class="list-unstyled social">
-							<li><a href="#"><span class="icon-instagram"></span></a></li>
-							<li><a href="#"><span class="icon-twitter"></span></a></li>
-							<li><a href="#"><span class="icon-facebook"></span></a></li>
-							<li><a href="#"><span class="icon-linkedin"></span></a></li>
-						</ul>
-                </div> <!-- /.widget -->
-            </div> <!-- /.col-lg-4 -->
-        </div> <!-- /.row -->
-
+                        <li><a href="#"><span class="icon-instagram"></span></a></li>
+                        <li><a href="#"><span class="icon-twitter"></span></a></li>
+                        <li><a href="#"><span class="icon-facebook"></span></a></li>
+                        <li><a href="#"><span class="icon-linkedin"></span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
         <div class="row mt-4">
             <div class="col-12 text-center">
                 <p class="mb-0">&copy; <script>document.write(new Date().getFullYear());</script> All Rights Reserved. Designed with love by <a href="https://untree.co" class="text-light">Untree.co</a></p>
             </div>
         </div>
-    </div> <!-- /.container -->
-</footer> <!-- /.site-footer -->
+    </div>
+</footer>
 
 <!-- Preloader -->
 <div id="overlayer"></div>

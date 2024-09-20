@@ -70,16 +70,25 @@
             {% for review in review %}
             <li class="comment">
               <div class="vcard">
+                <a href="{% url 'pview' review.profile.user %}">
                 <img src="{{review.profile.image.url}}"  class="rounded-circle" style="width: 40px; height: 40px;">
+                </a>
               </div>
               <div class="comment-body">
+                <a href="{% url 'pview' review.profile.user %}">
                 <h3>{{review.profile.username}}</h3>
+                </a>  
                 <div class="meta">{{review.date}}</div>
                 <p>{{review.comment}}</p>
                 {% if user == review.profile.user %}
-                <a href="{% url 'editrev' review.id %}" class="btn py-2 " title="Edit Blog">
-                  <i class="fas fa-edit" style="font-size: 20px; color: #214252;"></i>
+                <div class="d-flex justify-content-end">
+                <a href="{% url 'editrev' review.id %}?next={{ request.path }}" class="btn py-2" title="Edit Blog">
+                  <i class="fas fa-edit" style="font-size: 16px; color: #214252;"></i>
                 </a>
+                <a href="{% url 'revdel' review.id %}?next={{ request.path }}" class="btn py-2" title="Edit Blog">
+                  <i class="fas fa-trash" style="font-size: 15px; color: red;"></i>
+                </a>
+                </div>
                 {% endif %}
               </div>
             </li>
@@ -87,7 +96,7 @@
           </ul> 
           {% endif %}
           {% if total_reviews > 5 %}
-          <a href="{% url 'allrev' blog_det.id %}" class="d-flex justify-content-center w-100 text-primary">All {{total_reviews}} reviews ></a>
+          <a href="{% url 'allrev' blog_det.id %}" class="d-flex justify-content-center w-100 text-primary">All {{total_reviews}} reviews &raquo;</a>
           {% endif %}
           <div class="comment-form-wrap pt-5">
             <h3 class="mb-2">Leave a comment</h3>

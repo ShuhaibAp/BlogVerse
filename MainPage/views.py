@@ -34,10 +34,10 @@ class HomePage(TemplateView):
         return context
 #search 
 def blog_search(request):
-    query = request.GET.get('q')
-    blogs = Blog.objects.all()
+    query=request.GET.get('search-value')
+    blogs=Blog.objects.all()
     if query:
-        blogs = blogs.filter( Q(title__icontains=query) | Q(category__icontains=query) | Q(profile__user__username__icontains=query))
+        blogs=blogs.filter( Q(title__icontains=query) | Q(category__icontains=query) | Q(profile__user__username__icontains=query))
     return render(request, 'blog_search.html', {'blogs': blogs, 'query': query})
 
 # Profile Views
@@ -49,15 +49,15 @@ class NewProfile(View):
         form_data=ProfileForm(data=request.POST, files=request.FILES)
         if form_data.is_valid():
             profile=form_data.save(commit=False)
-            profile.user = request.user
+            profile.user=request.user
             profile.save()
             return redirect('home')
         messages.error(request,"Please provide valid inputs!!")
         return render(request,"AddProfile.html",{"form":form_data})
 
 class ProfileView(DetailView):
-    template_name = "profile_view.html"
-    context_object_name = "profile"
+    template_name="profile_view.html"
+    context_object_name="profile"
     
     def get_object(self):
         user=get_object_or_404(User, username=self.kwargs.get('user'))
@@ -69,15 +69,15 @@ class ProfileView(DetailView):
         # Fetch user blogs
         user_blogs=Blog.objects.filter(profile=profile)
         # Pagination setup
-        paginator=Paginator(user_blogs, 5)  # Show 5 blogs per page
+        paginator=Paginator(user_blogs, 5)# Show 5 blogs per page
         page=self.request.GET.get('page')
         
         try:
             blogs_paginated=paginator.page(page)
         except PageNotAnInteger:
-            blogs_paginated=paginator.page(1)  # If page is not an integer, show the first page
+            blogs_paginated=paginator.page(1)# If page is not an integer,show the first page
         except EmptyPage:
-            blogs_paginated=paginator.page(paginator.num_pages)  # If page is out of range, show last page
+            blogs_paginated=paginator.page(paginator.num_pages)# If page is out of range, show last page
         context['user_blogs']=blogs_paginated
         return context
 
@@ -200,31 +200,29 @@ class ReviewList(ListView):
         blog = self.get_blog()
         return Review.objects.filter(blog=blog)
 
-from django.shortcuts import get_object_or_404, redirect
-from django.http import HttpResponseForbidden
-from django.urls import reverse
-
 def ReviewEdit(request, review_id):
-    review = get_object_or_404(Review, id=review_id)
+    review=get_object_or_404(Review, id=review_id)
     blog=review.blog.id
     # Ensure only the owner of the review can edit it
-    if review.profile.user != request.user:
+    if review.profile.user!=request.user:
         return HttpResponseForbidden()
-
     # Get 'next' parameter from the request to redirect back to the correct page
-    # next_url = request.GET.get('next') or request.POST.get('next') or reverse('allrev' , id =review_id)
-
-    if request.method == 'POST':
+    next_url=request.GET.get('next') or request.POST.get('next') or reverse('bdet', kwargs={'id': blog})
+    if request.method=='POST':
         form = ReviewForm(data=request.POST, instance=review)
         if form.is_valid():
             form.save()
-            # Redirect to the original page or fallback to 'reviews_list'
-            return redirect("allrev",id=blog)
+            # Redirect to the 'next' URL or fallback to the 'allrev' view
+            return redirect(next_url)
     else:
         form = ReviewForm(instance=review)
-    
-    return render(request, 'reviews_edit.html', {'form': form, 'review': review})
+    return render(request, 'reviews_edit.html', {'form': form, 'next': next_url})
 
+def ReviewDelete(request,review_id):
+    review=get_object_or_404(Review, id=review_id)
+    review.delete()
+    next_url=request.GET.get('next') or request.POST.get('next') or reverse('bdet', kwargs={'id': blog})
+    return redirect(next_url)
 
 class BlogUpdate(UpdateView):
     template_name="blog_update.html"
@@ -249,6 +247,23 @@ class LikedList(ListView):
         user_id = self.kwargs.get('id')
         return Blog.objects.filter(likes=user_id)
 
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        user_id=self.kwargs.get('id')
+        like_blogs=Blog.objects.filter(likes=user_id)
+        paginator=Paginator(like_blogs, 5)# Show 5 blogs per page
+        page=self.request.GET.get('page')
+        
+        try:
+            blogs_paginated=paginator.page(page)
+        except PageNotAnInteger:
+            blogs_paginated=paginator.page(1)# If page is not an integer,show the first page
+        except EmptyPage:
+            blogs_paginated=paginator.page(paginator.num_pages)# If page is out of range, show last page
+        context['likelist']=blogs_paginated
+        context['page_obj']=blogs_paginated
+        return context
+
 def BlogBookmark(request, blog_id):
     blog=get_object_or_404(Blog, id=blog_id)
     if request.user in blog.bookmarks.all():
@@ -261,7 +276,24 @@ class BookmarkList(ListView):
     template_name="bookmark_list.html"
     context_object_name="booklist"
     def get_queryset(self):
-        user_id = self.kwargs.get('id')
+        user_id=self.kwargs.get('id')
         return Blog.objects.filter(bookmarks=user_id)
+
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        user_id=self.kwargs.get('id')
+        book_blogs=Blog.objects.filter(bookmarks=user_id)
+        paginator=Paginator(book_blogs, 5)# Show 5 blogs per page
+        page=self.request.GET.get('page')
+        
+        try:
+            blogs_paginated=paginator.page(page)
+        except PageNotAnInteger:
+            blogs_paginated=paginator.page(1)# If page is not an integer,show the first page
+        except EmptyPage:
+            blogs_paginated=paginator.page(paginator.num_pages)# If page is out of range, show last page
+        # context['booklist']=blogs_paginated
+        context['page_obj']=blogs_paginated
+        return context    
 
 
