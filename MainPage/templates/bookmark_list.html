@@ -1,7 +1,7 @@
 {% extends "HomePage.html" %}
 {% block home %}
 <div class="section search-result-wrap">
-    <div class="container">
+    <div class="container" style="height:auto;">
         <div class="row">
             <div class="col-12 mb-5">
                 <div class="posts-entry-title">Bookmarks <i class="fas fa-bookmark" style="color: #214252; font-size: 18px;"></i></div>
@@ -67,8 +67,8 @@
                     </div>
                 </div>
             {% else %}
-			<div class="col-lg-8">
-				<p>No blogs found in this category.</p>
+			<div class="col-lg-8" style="height: 400px;">
+				<p>You dont have any bookmarks.</p>
 			</div>
             {% endif %}
             </div>

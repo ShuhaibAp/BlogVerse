@@ -80,7 +80,10 @@ class ProfileView(DetailView):
             blogs_paginated=paginator.page(paginator.num_pages)# If page is out of range, show last page
         context['user_blogs']=blogs_paginated
         return context
-
+    @method_decorator(never_cache)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+        
 class UpdateProfile(UpdateView):
     template_name="profile_update.html"
     form_class=ProfileForm

@@ -41,12 +41,14 @@
               <form action="{% url 'blike' blog_det.id %}" method="POST" class="d-inline">
                 {% csrf_token %}
                 <button type="submit" class="btn py-2">
+                  {% if user.is_authenticated %}
                   {% if user in blog_det.likes.all %}
                     <i class="fas fa-heart" style="color: red; font-size: 20px;"></i> 
                   {% else %}
                     <i class="far fa-heart" style="color: red; font-size: 20px;"></i> 
                   {% endif %}
                   {{ blog_det.total_likes }}
+                  {% endif %}
                 </button>
               </form>
             {% if user == blog_det.profile.user %}
@@ -85,7 +87,7 @@
                 <a href="{% url 'editrev' review.id %}?next={{ request.path }}" class="btn py-2" title="Edit Blog">
                   <i class="fas fa-edit" style="font-size: 16px; color: #214252;"></i>
                 </a>
-                <a href="{% url 'revdel' review.id %}?next={{ request.path }}" class="btn py-2" title="Edit Blog">
+                <a href="{% url 'revdel' review.id %}?next={{ request.path }}" class="btn py-2" title="delete Blog">
                   <i class="fas fa-trash" style="font-size: 15px; color: red;"></i>
                 </a>
                 </div>
@@ -99,9 +101,10 @@
           <a href="{% url 'allrev' blog_det.id %}" class="d-flex justify-content-center w-100 text-primary">All {{total_reviews}} reviews &raquo;</a>
           {% endif %}
           <div class="comment-form-wrap pt-5">
-            <h3 class="mb-2">Leave a comment</h3>
+            <h3 class="mb-2">Leave a review</h3>
             <form method="post" action="{% url 'revadd' blog_det.id %}">
               {% csrf_token %}
+              {% if user.is_authenticated %}
               <div class="form-group">
                   <label for="id_comment"></label>
                   {{ review_form.comment }}
@@ -109,6 +112,9 @@
               <div class="form-group">
                   <button type="submit" class="btn btn-primary">Post Comment</button>
               </div>
+              {% else %}
+              <div class="text-dark">You need to be logged in to add a Review.!</div>
+              {% endif %}
           </form>
           </div>
         </div>

@@ -31,7 +31,6 @@
 
 <title>BlogVerse</title>
 <link rel="icon" href="{% static 'images/iconbv.png' %}">
-
 </head>
 <body>
 
@@ -72,8 +71,10 @@
 										<li><a href="{% url 'blist' cat="Sports" %}">Sports</a></li>
 									</ul>
 								</li>
+								{% if user.is_authenticated %}
 								<li><a href="{% url 'booklist' user.id %}">Bookmarks</a></li>
 								<li><a href="{% url 'likelist' user.id %}">Liked</a></li>
+								{% endif %}
 								<form action="{% url 'blog_search' %}" method="GET" class="search-form d-none d-lg-inline-block mx-5">
 									<input type="text" name="search-value" class="form-control" placeholder="Search..." value="{{ request.GET.q }}">
 									<span class="bi-search"></span> <!-- Just for the icon -->
@@ -94,6 +95,8 @@
 											<img src="{% static 'images/avatar.jpg' %}" alt="Profile Image" class="rounded-circle" style="width: 40px; height: 40px;">
 										</a>
 										{% endif %}
+									{% else %}
+										<a href="{% url 'log' %}" class="btn btn-dark btn-sm py-2" title="Logout">Login</a>	
 									{% endif %}
 								</div>
 						</div>
@@ -435,11 +438,11 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-4">
+        <!-- <div class="row mt-4">
             <div class="col-12 text-center">
                 <p class="mb-0">&copy; <script>document.write(new Date().getFullYear());</script> All Rights Reserved. Designed with love by <a href="https://untree.co" class="text-light">Untree.co</a></p>
             </div>
-        </div>
+        </div> -->
     </div>
 </footer>
 
