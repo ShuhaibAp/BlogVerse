@@ -7,6 +7,7 @@ from .forms import *
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
 
+
 # Create your views here.
 
 class LoginView(FormView):

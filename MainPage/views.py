@@ -10,9 +10,10 @@ from django.contrib import messages
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
 from django.db.models import Q
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Homepage
-class HomePage(TemplateView):
+class HomePage(LoginRequiredMixin,TemplateView):
     template_name="HomePage.html"
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -55,7 +56,7 @@ class NewProfile(View):
         messages.error(request,"Please provide valid inputs!!")
         return render(request,"AddProfile.html",{"form":form_data})
 
-class ProfileView(DetailView):
+class ProfileView(LoginRequiredMixin,DetailView):
     template_name="profile_view.html"
     context_object_name="profile"
     
@@ -83,7 +84,7 @@ class ProfileView(DetailView):
     @method_decorator(never_cache)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
-        
+
 class UpdateProfile(UpdateView):
     template_name="profile_update.html"
     form_class=ProfileForm
