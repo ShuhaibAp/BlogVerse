@@ -23,4 +23,7 @@ urlpatterns=[
     path('Pupd/<str:user>',UpdateProfile.as_view(),name='pupd'),
     path('Pdel/<str:user>',DeleteProfile,name='pdel'),
     path('Pfollow/<int:profile_id>',FollowProfile,name='pfoll'),
+
+    path('about',AboutView.as_view(),name='abt'),
+    path('contact',ContactView.as_view(),name='cont'),
 ]

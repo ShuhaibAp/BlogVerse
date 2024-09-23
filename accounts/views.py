@@ -9,7 +9,17 @@ from django.utils.decorators import method_decorator
 
 
 # Create your views here.
+def signin_required(fn):
+    def inner(request,*args,**kwargs):
+        if request.user.is_authenticated:
+            return fn(request,*args,**kwargs)
+        else:
+            return redirect('log')
+    return inner
 
+dec=[signin_required,never_cache]
+
+# @method_decorator(decorator=dec,name='dispatch')
 class LoginView(FormView):
     template_name="login.html"
     form_class=EgLoginForm
@@ -27,11 +37,11 @@ class LoginView(FormView):
                 messages.error(request, "Invalid Username or Password")
         return render(request, "login.html", {'form': form_data})
 
-    @method_decorator(never_cache)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
+    # @method_decorator(never_cache)
+    # def dispatch(self, *args, **kwargs):
+    #     return super().dispatch(*args, **kwargs)
 
-@never_cache
+dec
 def logoutView(request):
     logout(request)
     return redirect('log')
@@ -41,8 +51,8 @@ class RegView(CreateView):
     form_class=ERegForm
     success_url=reverse_lazy('log')
 
-    @method_decorator(never_cache)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
+    # @method_decorator(never_cache)
+    # def dispatch(self, *args, **kwargs):
+    #     return super().dispatch(*args, **kwargs)
 
 
