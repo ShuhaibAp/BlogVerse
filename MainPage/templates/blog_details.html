@@ -148,7 +148,7 @@
       {% for rel in relProducts %}
       <div class="col-md-6 col-lg-3">
         <div class="blog-entry">
-          <a href="single.html" class="img-link">
+          <a href="{% url 'bdet' rel.id %}" class="img-link">
             <img src="{{rel.image.url}}" alt="Image" class="img-fluid">
           </a>
           <span class="date">{{rel.date}}</span>

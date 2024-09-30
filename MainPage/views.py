@@ -11,6 +11,19 @@ from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.decorators.cache import never_cache
+from django.utils.decorators import method_decorator
+
+
+def signin_required(fn):
+    def inner(request,*args,**kwargs):
+        if request.user.is_authenticated:
+            return fn(request,*args,**kwargs)
+        else:
+            return redirect('log')
+    return inner
+
+dec=[signin_required,never_cache]
 
 # Homepage
 class HomePage(LoginRequiredMixin,TemplateView):
@@ -56,6 +69,7 @@ class NewProfile(View):
         messages.error(request,"Please provide valid inputs!!")
         return render(request,"AddProfile.html",{"form":form_data})
 
+@method_decorator(decorator=dec,name='dispatch')
 class ProfileView(LoginRequiredMixin,DetailView):
     template_name="profile_view.html"
     context_object_name="profile"
@@ -81,9 +95,9 @@ class ProfileView(LoginRequiredMixin,DetailView):
             blogs_paginated=paginator.page(paginator.num_pages)# If page is out of range, show last page
         context['user_blogs']=blogs_paginated
         return context
-    @method_decorator(never_cache)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
+    # @method_decorator(never_cache)
+    # def dispatch(self, *args, **kwargs):
+    #     return super().dispatch(*args, **kwargs)
 
 class UpdateProfile(UpdateView):
     template_name="profile_update.html"
